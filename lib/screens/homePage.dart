@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:provider_implement/addBioScreen.dart';
-import 'package:provider_implement/bioData.dart';
+import 'package:provider_implement/provider/bioData.dart';
+import 'package:provider_implement/provider/itemAddNotifier.dart';
+import 'package:provider_implement/screens/addBioScreen.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -14,16 +15,16 @@ class _HomePageState extends State<HomePage> {
     var favIcon = Provider.of<BioData>(context, listen: false);
     return Scaffold(
       appBar: AppBar(
+        title: Text("HomePage"),
         actions: [
           IconButton(
-            icon: Icon(
-              Icons.add,
-              color: Colors.white,
-            ),
+            icon: Icon(Icons.add),
             onPressed: () {
-              Navigator.of(context).push(
+              Navigator.push(
+                context,
                 MaterialPageRoute(
-                  builder: (BuildContext context) => AddBioScreen(),
+                  fullscreenDialog: true,
+                  builder: (BuildContext context) => AddItemScreen(),
                 ),
               );
             },
@@ -48,8 +49,62 @@ class _HomePageState extends State<HomePage> {
                   });
             }),
           ),
+          Container(
+            color: Colors.white,
+            height: 200,
+            child: Column(
+              children: [
+                Expanded(
+                  child: Consumer<ItemAddNotifier>(
+                      builder: (context, itemAddNotifier, _) {
+                    return ListView.builder(
+                        itemCount: itemAddNotifier.itemList.length,
+                        itemBuilder: (context, index) {
+                          return Padding(
+                            padding: EdgeInsets.all(15.0),
+                            child: Text(
+                              itemAddNotifier.itemList[index].itemName,
+                              style: TextStyle(
+                                fontSize: 20,
+                                color: Colors.black,
+                              ),
+                            ),
+                          );
+                        });
+                  }),
+                ),
+              ],
+            ),
+          )
         ],
       ),
     );
   }
 }
+
+//  Container(
+//           padding: EdgeInsets.all(30.0),
+//           child: Column(
+//             children: [
+//               Expanded(
+//                 child: Consumer<ItemAddNotifier>(
+//                     builder: (context, itemAddNotifier, _) {
+//                   return ListView.builder(
+//                       itemCount: itemAddNotifier.itemList.length,
+//                       itemBuilder: (context, index) {
+//                         return Padding(
+//                           padding: EdgeInsets.all(15.0),
+//                           child: Text(
+//                             itemAddNotifier.itemList[index].itemName,
+//                             style: TextStyle(
+//                               fontSize: 20,
+//                               color: Colors.black,
+//                             ),
+//                           ),
+//                         );
+//                       });
+//                 }),
+//               )
+//             ],
+//           ),
+//         ),

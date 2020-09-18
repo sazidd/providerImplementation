@@ -1,78 +1,44 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:provider_implement/addBioData.dart';
-import 'package:provider_implement/bioData.dart';
+import 'package:provider_implement/provider/itemAddNotifier.dart';
 
-class AddBioScreen extends StatefulWidget {
-  @override
-  _AddBioScreenState createState() => _AddBioScreenState();
-}
+class AddItemScreen extends StatelessWidget {
+  AddItemScreen() : super();
 
-class _AddBioScreenState extends State<AddBioScreen> {
-  final _form = GlobalKey<FormState>();
+  final String title = "Add Items";
 
-  var _editBioData = BioData(
-    id: null,
-    name: "",
-    description: "",
-  );
-
-  _saveForm() {
-    _form.currentState.save();
-    if (_editBioData.id == null) {
-      Provider.of<AddBioData>(context, listen: false).addProduct(_editBioData);
-    }
-    Navigator.of(context).pop();
-  }
+  final TextEditingController _itemNameController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Add Bio"),
-        actions: [
-          IconButton(
-            icon: Icon(
-              Icons.save,
-              color: Colors.white,
-            ),
-            onPressed: _saveForm,
-          ),
-        ],
+        title: Text(title),
       ),
-      body: Form(
-        key: _form,
-        child: ListView(
+      body: Container(
+        padding: EdgeInsets.all(30.0),
+        child: Column(
           children: [
-            Padding(
-              padding: const EdgeInsets.all(15.0),
-              child: TextFormField(
-                onSaved: (value) {
-                  _editBioData = BioData(
-                    id: _editBioData.id,
-                    name: value,
-                    description: _editBioData.description,
-                  );
-                },
-                decoration: InputDecoration(
-                  labelText: "Name",
-                ),
+            TextField(
+              controller: _itemNameController,
+              decoration: InputDecoration(
+                contentPadding: EdgeInsets.all(15.0),
+                hintText: "Item Name",
               ),
             ),
-            Padding(
-              padding: const EdgeInsets.all(15.0),
-              child: TextFormField(
-                onSaved: (value) {
-                  _editBioData = BioData(
-                    id: _editBioData.id,
-                    name: _editBioData.name,
-                    description: value,
-                  );
-                },
-                decoration: InputDecoration(
-                  labelText: "Description",
-                ),
-              ),
+            SizedBox(
+              height: 20.0,
+            ),
+            RaisedButton(
+              child: Text("Add Item"),
+              onPressed: () {
+                if (_itemNameController.text.isEmpty) {
+                  return;
+                }
+                Provider.of<ItemAddNotifier>(context,listen: false)
+                    .addItem(_itemNameController.text);
+                Navigator.pop(context);
+              },
             ),
           ],
         ),
